@@ -23,31 +23,58 @@ string sConfig_path = "../config/";
 
 std::shared_ptr<System> pSystem;
 
+// void PubImuData()
+// {
+// 	string sImu_data_file = sConfig_path + "MH_05_imu0.txt";
+// 	cout << "1 PubImuData start sImu_data_filea: " << sImu_data_file << endl;
+// 	ifstream fsImu;
+// 	fsImu.open(sImu_data_file.c_str());
+// 	if (!fsImu.is_open())
+// 	{
+// 		cerr << "Failed to open imu file! " << sImu_data_file << endl;
+// 		return;
+// 	}
+
+// 	std::string sImu_line;
+// 	double dStampNSec = 0.0;
+// 	Vector3d vAcc;
+// 	Vector3d vGyr;
+// 	while (std::getline(fsImu, sImu_line) && !sImu_line.empty()) // read imu data
+// 	{
+// 		std::istringstream ssImuData(sImu_line);
+// 		ssImuData >> dStampNSec >> vGyr.x() >> vGyr.y() >> vGyr.z() >> vAcc.x() >> vAcc.y() >> vAcc.z();
+// 		// cout << "Imu t: " << fixed << dStampNSec << " gyr: " << vGyr.transpose() << " acc: " << vAcc.transpose() << endl;
+// 		pSystem->PubImuData(dStampNSec / 1e9, vGyr, vAcc);
+// 		usleep(5000*nDelayTimes);
+// 	}
+// 	fsImu.close();
+// }
+
 void PubImuData()
 {
-	string sImu_data_file = sConfig_path + "MH_05_imu0.txt";
-	cout << "1 PubImuData start sImu_data_filea: " << sImu_data_file << endl;
-	ifstream fsImu;
-	fsImu.open(sImu_data_file.c_str());
-	if (!fsImu.is_open())
-	{
-		cerr << "Failed to open imu file! " << sImu_data_file << endl;
-		return;
-	}
-
-	std::string sImu_line;
-	double dStampNSec = 0.0;
-	Vector3d vAcc;
-	Vector3d vGyr;
-	while (std::getline(fsImu, sImu_line) && !sImu_line.empty()) // read imu data
-	{
-		std::istringstream ssImuData(sImu_line);
-		ssImuData >> dStampNSec >> vGyr.x() >> vGyr.y() >> vGyr.z() >> vAcc.x() >> vAcc.y() >> vAcc.z();
-		// cout << "Imu t: " << fixed << dStampNSec << " gyr: " << vGyr.transpose() << " acc: " << vAcc.transpose() << endl;
-		pSystem->PubImuData(dStampNSec / 1e9, vGyr, vAcc);
-		usleep(5000*nDelayTimes);
-	}
-	fsImu.close();
+string sImu_data_file = sConfig_path + "imu_pose.txt";
+cout << "1 PubImuData start sImu_data_filea: " << sImu_data_file << endl;
+ifstream fsImu;
+fsImu.open(sImu_data_file.c_str());
+if (!fsImu.is_open())
+{
+cerr << "Failed to open imu file! " << sImu_data_file << endl;
+return;
+}
+std::string sImu_line;
+double dStampNSec = 0.0;
+Quaterniond q;
+Vector3d t;
+Vector3d vAcc;
+Vector3d vGyr;
+while (std::getline(fsImu, sImu_line) && !sImu_line.empty()) // read imu
+data
+{
+std::istringstream ssImuData(sImu_line);
+ssImuData >> dStampNSec >> q.w() >> q.x() >> q.y() >> q.z() >> t(0) >>
+t(1) >> t(2) >> vGyr(0) >> vGyr(1) >> vGyr(2) >> vAcc(0) >> vAcc(1) >> vAcc(2);
+pSystem->PubImuData(dStampNSec, vGyr, vAcc);
+usleep(5000 * nDelayTimes);
 }
 
 void PubImageData()
